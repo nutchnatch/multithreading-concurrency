@@ -1,0 +1,72 @@
+# OS is loaded into memory (interact with hardware)
+
+# When running an application:
+	- OS take it from disk and loads it into memory
+		- that instance is called process or context of an application
+	- each process is isolated from other processes
+		- process contains:
+			1- Metadata
+				+ ProccessID
+				+ Files
+				+ Code (which will be executed)
+				+ Heap (contains data application needs)
+				+ At least one thread (mainthread)
+				+ Thread contains:
+					-> stack (region in memory where lecal variables are stored and passed into functions)
+					> instruction pointer (address of the next instruction to be executed)
+
+				Multithreaded processes:
+					- each one has its own stack & instruction pointer
+					- rest of metadata is shared between threads
+
+
+# Context switch:
+	* 1 process may have multiple threads
+		- all those threads are competing to be executed on the cpu
+	* even if we have some cores, there are still more thread than cores
+		- so OS must run a thread, stop it and then run another one
+	* this is context switch. stop a thread 1, schedule it out, schedule thread 2 in, start thread 2
+	* this operation is not cheap with many threads, this is the price to pay for concurrency
+	* the same thing happens to humans when they have to swith work context
+	* each thread consumes resources in the CPU and memory
+	* when we switch to an other thread, we need to store all data for this new thread
+	* trashing 
+		- is the result when OS is spending more time managing context switching than real productive work
+		- context switching between threads from the same process is cheaper than from different processes
+
+# Thread Scheduling
+	* OS devide time in epochs (with the same size)
+	* in each epoch, it allocates different time slices for each thread
+		- not all of them will run or be completed in each epoch
+		- decision on how to allocate time for each thread is based on a dunamic priority it maintains for each thread
+			: dinamic priority = static priority + Bonus
+				static priority is set programatically
+				bonus is adjusted by OS for each thread
+		- so OS will give priority to interactive threads (e.g user interface)
+		- OS give priority to threads which did not run in the last epoch, preventing starvation
+
+# When to use multiple threads in a single program and when to create a new program in a different process??
+	
+	Process context:
+
+	Multithreading approach
+	PID 	  Files			| Main thread 		Thread1
+	Mode	  Data (heap)	|  stack 			  Stack
+							|  instruction 		Instruction
+	priority  Code 			|   pointer			 pointer
+
+	Multiple proccess:
+	Process 1
+	PID 	  Files			| Main thread 
+	Mode	  Data (heap)	|  stack 	
+							|  instruction 	
+	priority  Code 			|   pointer	
+
+	* Multithreading approach - threads share a lot of resources among them
+		- if tasks share a lot of data, prefer Multithreading approach
+		- threads are much faster to create and destroy
+		- switching between thread in the same proccess leads to shorter contex switching
+	* Multiple processes - If security and stability are priorities
+		- a separate process is completely isolated from othes
+		- in a multithreading app, on thread can bring down the entire app
+		- if tasks are unrelated to each other, there is no reason to put them together in the same process
