@@ -1,0 +1,39 @@
+Performance:
+    - can be measured in latency (for example, can be measured in unit of time)
+        * the faster a transaction can be, more performant it is
+
+    - Latency - time to complete a single task
+        * we can break that task in multiple independent tasks
+        * schedule those sub-tasks to be executed in parallel, on different threads
+        * latency = T/N, N = num of sub-tasks
+            * what would be the number for N?
+                - N = number of cores
+                        - (only if the threads can run without interruptions (no IO/blocking calls/sleep))
+                        - (nothing else is running  that consumes a lot od cpu)
+                        - hiperthreading - virtual cores vs physical cores
+                    -> to run really in parallel, each of them should run on a core
+                    -> adding on more thread, would be counterproductive and reduce latency
+                    -> that thread would be pushing other threads, causing context switching, bad cash performance, extra memory consumption
+            * breaking a task an aggregating results comes fro free?
+                - cost of breaking task into multiple tasks + thread creation, passing tasks to threads +
+                   time between thread start and getting really scheduled + time until the last thread finishes and signals +
+                   time until aggregation thread get signal + time to aggregate sub-results into a single artifact
+            * can we break any task in multiple sub-tasks?
+                - no.
+                - breakable tasks
+                - unbreakable task, single threaded, sequential
+                - partially breakable tasks
+
+    - Throughput - amount of tasks completed in a given period, measured in tasks/time.
+        * when we need to perform as many task as possible, as fast as possible
+        * if latency=N, minimum throughput=1/T
+        * if task can be broken in many sub-tasks, then throughput=N/T
+        * but there is a cost to break a task (seen above)
+
+    - Thread Pooling
+        * create the thread once and reuse them for future tasks, instead of recreating them each time from scratch
+        * once created in a queue, tasks are distributed through threads in the pool
+        * each thread takes task from the queue whenever that thread is available
+        * use thread pool implementation provided with JDK
+        * fixed thread pool executor cretes a thread pool with a fixed number of thread in the pool
+        * it comes with a builtin queue

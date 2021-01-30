@@ -1,0 +1,7 @@
+Apache Jmeter
+    - allows us to create an automated performance test plan
+    - load file which contains a list of words, each word will send an http request  and wait for the response
+    - the tool will send as many request as possible and as fast as possible, and in the end gives the throughput of the app
+    - throughput = #requests / time to get the response
+    - We can clearly see that the performance keeps improving as we add more threads until we reach specific # of threads.
+        At that point the performance plateaus and stays the same as more threads are added.
