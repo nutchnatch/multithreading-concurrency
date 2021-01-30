@@ -1,0 +1,23 @@
+Threads coordination
+    - how can we guarantee that the threads upon which we depend completes its work by the time we expect
+    - full control of other threads execution
+    - tasks in parallel, significant speedup, safely correlate anf aggregate results
+
+Why we do need
+    - different threads run entirely independently
+    - order of execution is out of control
+
+Two threads (A, B), where B depends on thread A
+    - Naive solution, busy way
+        * tread B runs in a loop and keeps checking if thread A's result is ready
+        * this approach is extremely inefficient  (thread B is burning cpu, counterproductive)
+        * what we want is thread B to sleep and wait for thread A to finish and only then thread B wakes up to get the result
+        * use tool Tread.join()
+
+Notes:
+    - never rely on the order of execution
+    - always use thread coordination to get reliable results
+    - design the code for worst case scenario
+    - threads may take unreasonable time to finish
+    - to solve, we pass the duration for the thread in join method
+    - stop the thread if it is not done by that time
