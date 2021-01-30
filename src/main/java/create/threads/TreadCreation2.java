@@ -1,4 +1,4 @@
-/*
+package create.threads;/*
  * MIT License
  *
  * Copyright (c) 2019 Michael Pogrebinsky

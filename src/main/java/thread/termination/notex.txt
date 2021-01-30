@@ -1,0 +1,32 @@
+# Thread termination, why and when?
+    Threads consume resources:
+        + memory and kernel resources
+        + cpu cycle and cache memory
+    If a thread finished its work, but the application is still running, we want to clean up the thread's resources
+    Another reason is its misbehaving, we want to stop it (very long calculation, or trying to reach an unreachable server)
+    By default, the application will not stop as long as at least one thread is still running
+
+    Thread.interrupt()
+
+    ThreadA                         ThreadB
+       |                               |
+       |                               |
+       |                               |
+    threadB interrupt() -------------- |
+       |                               |
+       |                               v
+
+# When can we interrupt a thread?
+    There are 2 scenarios where it can be used:
+    1- If the thread we are trying to interrupt is executing a method that throws an interrupted exception
+    2- If thread we are trying ti interrupt is handling the interrupt signal explicitly
+
+# Daemon threads are background threads that do not prevent the application from exiting if the main thread terminates.
+    - background tasks that should not block our application from terminating
+    ex: file saving thread in a text editor. We don't want to wait for it to finish
+    - code in a worker thread is not under our control, and we do not want to our application from terminating
+    ex: worker thread that uses an external library
+    - we can set that by set daemon to true: thread.setDaemon(true);  // when the main threads terminates, the entire app terminates
+
+    note: As a rule of thumb, never leave a catch block empty, and use the InterruptedException catch block to gracefully
+     stop the current thread (by adding some print or cleaning code before returning from the run method)
