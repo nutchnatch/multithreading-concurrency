@@ -1,0 +1,19 @@
+Why share resources?
+    - a resource in the scope of a computer program is something that represents data or state
+        + variables (integer, strings)
+        + data structures (arrays, collections, maps, files, connections, message queues, any object)
+    - queue that contains data to be processed by a number of worker threads
+        + this queue is a shared resource
+    - shared database connection to handle many requests
+
+    - Problems that may arrive:
+        * if a resource is shared between threads, its state is not guaranteed to be consistent
+
+Atomic operation
+    - an operation or a set of operations that appear to the rest of the system as if it happens at once
+    - single step, all or nothing
+    - no intermediate state - no way to interrupt it to observe
+        * ex: increment and decrement are not atomics
+            + get value
+            + assign new value
+            + store new value

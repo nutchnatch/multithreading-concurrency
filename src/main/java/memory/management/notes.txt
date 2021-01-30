@@ -1,0 +1,43 @@
+Important topic in order to write multithreading applications to give
+    - consistency
+    - write results
+    - good performance
+
+First memory region - Stack memory region:
+    - is the memory region where methods are executed
+    - whenever we pass an argument to a function, it is passed to the stack
+    - all local variables are stored in the stack
+    - overall state of each thread execution = Stack + instruction pointer
+
+    - when the main thread calls a method, it allocated some space on top of the stack for that method
+    - that space is called the stack frame
+    - arguments are pushed inside that frame
+    - every local variable is allocated in the stack, in the order os appearance
+    - each method has access to variable in ist own frame
+    - when the method is returned, its stack frame is invalidated
+    - the same happens with the main thread, when it finishes stack frame is invalidated
+    - it works exactly as a stack, last in, first out order
+
+    - stack size is fixed, relatively small (platform dependent)
+    - if our call hierarchy is too deep, we may get an stack overflow exception (risky with recursive calls)
+
+Second memory region - Heap
+    - shared memory region that belongs to the process
+    - all threads share whatever is located on the heap
+    - we can access and allocate object on the heap at any moment
+    - all objects are allocate on the heap (all created with new operator)
+        * String, Object, Collections ... our own created objects
+        * Member of classes
+        * Static variables - member of the class object, associated with that class
+
+    - heap is governed and managed by Garbage Collector
+    - objects stay on the heap at least as long as there is a reference to them
+        + they are garbage collected when the reference is lost
+    - Member of class exists as long as their parent objects exists
+    - static variables stay untouched through the entire application lifetime
+
+Objects vs Reference
+    - references are allocated on the stack, if they are declared as local variables on the method
+    - allocated on the heap with the parent object, if they are part of the class
+
+    - objects are always allocated on the heap
