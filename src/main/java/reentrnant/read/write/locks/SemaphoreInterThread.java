@@ -17,7 +17,6 @@ public class SemaphoreInterThread {
         for (int i = 0; i < numberOfThreads; i++) {
             threads.add(new Thread(new CoordinatedWorkRunner(barrier)));
         }
-
         for(Thread thread: threads) {
             thread.start();
         }
