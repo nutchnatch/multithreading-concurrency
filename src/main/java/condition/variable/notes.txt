@@ -1,0 +1,29 @@
+Thread communication
+    - On way to communicate is when we explicitly interrupt a thread
+    - Other one is when er cal join method that tells other threads to wait until this thread finishes
+        and wakes it up then
+    - when a thread A release a semaphore, it tells thread B to wake up
+
+Semaphore as condition variable
+    - calling acquire on a semaphore is equivalent to check the condition:
+        + Is number of permits > 0?
+
+Condition variable
+    - is a generic way of inter-thread communication
+    - allows to use any condition we want to stipulate the continuation or stop a thread
+    - it is always associated with a lock
+    - lock ensure atomic check and modification of shared variables with the condition, is done atomically
+
+    - 1st, create reentrant lock
+    - 2nd, create a condition: lock.newConditon()
+    - a thread locks a resource to check a a condition:
+        + e.g while(username == null || password == null)
+    - condition.wait() - unlocks lock and push thread to sleep
+    - ui thread acquires the lock enter username/password to variables and call condition.signal() to wake up the authentication thread (that was watining)
+    - ui thread must unlock the lock (done in try{} finally()), so the other thread can continue
+
+    - other methos:
+        + awaitNanos(long timeout) - waits no longer than timeout value
+        + awaitUntil(date) - waits until date is reached
+    - if currently no thread is waiting on the condition variable, the signal method doesn't do anything
+    - signalAll() - broadcast a signal to all threads currently waiting on the condition variable, all waiting threads will wake up
