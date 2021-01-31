@@ -1,0 +1,26 @@
+Semaphore
+    - permit issuing and enforces authority
+    - can be used to restrict the number of users to a particular resource or a group of resources
+    - unlike locks that allows only one user per resource, semaphore can restrict any number of users to a resource
+    - ex: parking lot
+        + 8 parking spot in the 8 parking lot, at most 8 parking permit can be issued for 8 cars at a given moment
+        + with 8 cars on the lot, any additional car, will have to wait
+        + when one pr more cars leave, those places can be acquired by others
+        + semaphore is initialized with the number of permits it can issue
+        + any thread that call semaphore.acquire(), it takes a permit and if it is available, it moves to the next instruction
+        + a thread can acquire more than one permit at a time
+        + the same way, the release can be applied to more than one permit
+        + calling acquire ina semaphore with no more permits to spare, results in blocking of the tread until the semaphore is released
+        + acquiring a permit will lock the semaphore until it is released
+        + semaphore is not a great choice for a lock
+            - because a semaphore is different from in different ways:
+                * does not have a notion of owner thread, since many thread can acquire a permit
+                * a thread can acquire a semaphore multiple times
+                * binary semaphore is not reentrant
+                * if a thread acquire a semaphore, and tries to acquire it again, that thread will be blocked until other release it
+                * semaphore can be released by any thread, even those that did not acquire it
+                * a thread can lock a resources, bu other thread may accidentally release the semaphore and two thread may have access to the same resource
+                * this is not possible with other locks
+                * because of this, semaphore is better for a case of producer/consumer
+                * producer- consumer
+                    -
