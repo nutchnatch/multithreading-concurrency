@@ -1,0 +1,31 @@
+Race conditions
+    - multiple thread sharing the same resource
+    - solution:
+        * complete mutual exclusion
+            + regardless of operation (read/write/both)
+            - lock and allow only one thread to access critical section
+       * have a situation where read operations are much more frequent than write operations
+       * there is a lock to protect race conditions between readers and writers
+       * do we need to protect a reader from another reader?
+            + no- if they are not modifying the state, read threads can concurrently access shared resource
+       * for synchronized and reentrant locks
+            + read operation is relatively fast, if we keep critical section short, the chance of contention over a lock is minimal
+       * for read/write locks
+            + when read operations are predominant
+            + when read operation are not ads fast
+                - read from many variables
+                - read from a complex data structure
+            + manual exclusion of reading threads negatively impacts the application
+            + in this situation, reentrant read/write lock come to help
+                - new ReentrantReadWriteLock();
+                    + comes with two internal locks (readLock() and writeLock())
+                        - writelock to protect a section which is trying to modify resources
+                        - readlock to protect when we want to read resources
+                        - multiple threads can acquire read lock simultaneously
+                        - and the read lock keep counting how many thread are reading
+                        - only a single thread is allowed to lock a write lock
+                        - there is mutual exclusions between readers and writers
+                            * if write lock is acquired by a thread, no other thread can acquire a read lock until write lock is released
+                            * if read lock is acquired by a thread, no other thread can acquire a write lock until read lock is released
+                        - if read is not an intensive operation reentrant read/write lock can perform worse than reentrant lock
+                        - measure and validate to make sure our assumption is correct
