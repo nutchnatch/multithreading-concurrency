@@ -1,0 +1,39 @@
+Race condition:
+    - when we have multiple threads acessing a shared resource
+    - at least one of those threads is modifying the resource
+    - timing or order of scheduling may cause incorrect results
+    - the core of the problem is the execution od non-atomic operations on a shared resource
+
+    * solution:
+        - identification of the critical section where the race condition is happening
+        - protect critical section by a synchronized block
+
+Data race:
+    - compiler and cpu execute instructions out of order to optimize performance and hardware utilization
+    - they do so while maintaining the logical correctness of the code
+    - that is a great feature to speed up the code
+    - compiler rearranges instructions for better:
+        + branch prediction (optimized loops, "if" statements, etc)
+        + vectorization - parallel instruction execution (SIMD)
+        + prefetching instructions - better cache performance
+    - cpu re-arranges instructions for a better hardware units utilization
+    public void increment1() {
+            x = 1;
+            y = x + 2;
+            z = y + 10
+    }
+    - code above will not suffer of data race, because each line depends o the last one, so no reorder will be placed
+    public void increment2() {
+               y ++;
+               x ++;
+    }
+    - code above code, instructions are independent, so they can be reordered by compiler or cpu, causing race data
+
+    - may lead to unexpected, paradoxical and incorrect results
+
+How to prevent date race:
+    - synchronization
+    - declare shared variables as volatile, reduce overhead of locking and guarantee order
+    - every shared variable (modified by at least one thread) should be either
+        + guarded by a synchronized block (or any type of lock)
+        + or declared volatile
