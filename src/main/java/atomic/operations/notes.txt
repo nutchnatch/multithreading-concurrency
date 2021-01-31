@@ -1,0 +1,29 @@
+Extreme defensive approach: which operations are atomic?
+    - problems with synchronized
+        + we are not running in parallel
+        + we have the overhead of context switching
+        + so, it is not recommendable
+        + we desire some contentions in shared data, but we want more threads running in parallel of threads and perform
+        much more work than a single thread in a given period of time
+
+    - which operations are atomic?
+        * most of them are not atomic
+        * all reference assignments are atomic
+            + we can get and set references to objects atomically
+        * all assignment to primitive types are safe except long and double
+            + we can read and write (without synchronization) to :
+                - int
+                - short
+                - byte
+                - float
+                - char
+                - boolean
+            + long and double are exceptions because they are 64 bit long (require two operations by cpu)
+            + solution: use volatile key word
+                - volatile double x = 1.0
+                - volatile double x = 1.0
+                - x = y - atomic operation
+            + Volatile makes assignments to long atomic, however incrementing a volatile variable still involves multiple operations
+
+Metrics aggregation
+    - measure how log a operation takes to complete
