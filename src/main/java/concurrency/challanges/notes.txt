@@ -1,0 +1,25 @@
+Synchronized monitor:
+    - locking mechanism
+    - used to restrict access to a critical section or entire method to a single thread at a time
+    - when applied to a method it restrict access to a single thread
+        * restriction is applied per object (called monitor), if you lock one door, all doors are immediately locked
+            + every synchronized method is like different doors to a room
+        * if there are more than a method with synchronized keyword, when one thread is allowed to access on method, the
+        other threads will be blocked
+
+Synchronized lock
+    - other way to protect a section without making the entire method synchronized
+    - for that, we need to create an object which will serve as a lock, and will allow only one thread to be execute
+    inside that block
+    - different methods can use the same lock to monitor different critical sections
+    - with two lock objects, thread A can access to the first critical section, while thread B can access second critical section
+        with the second lock object.
+    - two threads cannot access to the same critical section, protected by a single lock object
+    - don't need to synchronize the entire method, just a single minimal section
+    - Synchronization is happening on an object level, and not Class level. Since thread1 and thread2 are executing methods
+    from different objects, they do not block each other
+
+    Reentrant
+        * a thread cannot prevent itself to enter a critical section
+            + if a thread accessed a critical section, it is able to access other critical section which is protected by
+            the same lock
