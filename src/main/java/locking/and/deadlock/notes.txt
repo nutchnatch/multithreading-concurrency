@@ -1,0 +1,31 @@
+Locking strategies when there are multiple shared resources in the application
+
+Lock strategies:
+    - Fine-grained locking (separate lock for each resource) vs Coarse-grain locking (single lock for all resources)
+        + Coarse-grain locking
+            * advantage
+                - single lock to worry about,
+                - very simple to maintain
+            * desadvantage:
+                - overkill (why not allow it to run concurrently?)
+                - one thread per time can make advance
+        + Fine-grained locking
+            * advantage
+                - one lock per each resource
+                - more parallelism
+            * desadvantage
+                - deadlock
+                    + everybody want to make a progress but cannot, because everybody is locked to move
+
+Condition for Deadlocks:
+    - Mutual exclusion - only one thread can have exclusive access to a resource in a given moment
+    - Hold and wait - at least one thread is holding a resource and is waiting for another resource
+    - Non-preemptive allocation - a resource is only released after a thread is done using it
+    - Circular wait - a chain of at least two threads each one is holding one resource and waiting for another resource
+
+Solution:
+    - avoid circular wait - enforce a strict order in  lock acquisition, stick to that order
+    - anyway, maintaining this order may be a difficult task and hard to accomplish
+        * solution:
+            - watchdog for lock detaction.
+            - tryLock operations (not possible with synchronized)
