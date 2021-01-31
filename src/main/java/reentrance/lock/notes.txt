@@ -1,0 +1,56 @@
+Reentrant lock:
+    - works just like a synchronized keyword applied to an object
+    - requires explicitly locking and unlocking
+        * create Lock lockObject = new ReentrantLock();
+        * lockObject.lock(); // lock object
+        * lockObject.unlock(); // unlock object
+        * do not forget to unlock the object, so it might stay locked and cause bugs
+
+        * in case of exceptions happening between the lock and unlock, so to avoid leaving the object locked,
+            - release the object in the finally step, this guarantee that no mether what happens, lock object will be unlocked
+            try {
+
+            } finally() {
+                lockObject.unlock();
+            }
+
+       * For the complexity, we are rewarded with:
+            + control over the lock
+            + more lock operations
+                - query methods for testing
+                    getQueuedThreads() - returns a list of threads waiting to acquire a lock
+                    getOwner() - returns the thread that currently owns the lock
+                    isHeldByCurrentThreadMethod() - queries if lock is held by current thread
+                    isLocked() - queries if lock is acquired by any thread
+            + every production code needs thoroughly tested
+                - using isLocked(), getQueuedThreads() and others can be handy
+            + by default, as well as synchronized keyword, ReentrantLock does not guarantee any fairness
+            + if we have a lot of threads waiting ti acquire lock on a shared object, we may have a situation where:
+                - a thread may get the lock multiple times, while other threads stay starving and get the lock
+            + to make the lock fair, pass true to reentrant lock:
+                - new ReentrantLock(true)
+                - may reduce the throughput of the application, so use it wisely
+        * Lock Interruptibility
+            - while another thread is holding the lock, current thread would get suspended and not wake up until lock is released
+            - in this case, calling interrupt() method to suspend a thread would not do anything
+            - instead, we can call lockObject.lockInterruptibly(), while another thread is holding the lock, then we can
+                get out of this suspension. WE should try and catch the interrupted exception.
+            - so if we call lockInterruptibly() from another thread, the tread acquiring the lock will be suspended and got o the catch block
+            - inside the catch block we can clean up th thread ans shutdown gracefully
+            - this method is used by watchdog for deadlock detection
+        * Trylock operation
+            - returns true and acquires a lock if available
+            - returns false and does not get suspended, if the lock is unavailable
+            - unlikely the lock, when the lock is not available, tryLock does not block and returns false immediately, because
+                the resource is not available. In this case the thread can continue to the further steps
+            - it is useful to be used  where suspending a thread on a lock is unacceptable
+                ex: video/image processing
+                    high speed/low latency trading systems
+                    user interface thread
+            - advantages:
+                + avoid blocking the real time thread
+                + keep application responsive
+                + performed operations atomically
+            - We absolutely need to check the return value of the tryLock() to determine if we can use the shared resource or not.
+                In addition, if we call lock.unlock() on a lock that another thread has acquired, we will get an exception and our
+                thread will crash
