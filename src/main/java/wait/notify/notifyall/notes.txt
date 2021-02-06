@@ -1,0 +1,17 @@
+The Object class in java contains the following methods:
+    - wait()
+    - notify()
+    - notifyAll()
+
+    - since every Java class inherits from the Object class, we can call those methods from any class
+    - we can use any object as a conditional variable and lock (using synchronized keyword)
+
+    - wait() - causes the current thread to wait until another thread wakes it up
+        * in this state, that thread is not consuming any cpu
+    - 2 ways to wake up a sleeping thread:
+        + notify() - called from another thread; it will waits a thread waiting on that object
+            - if many threads are waiting, only od them will be chosen arbitrarily
+        + notifyAll() - awakes all threads waiting on that object
+        + to call those methods, we need to acquire the  monitor of that object (use synchronized on that object)
+
+    - whenever using a queue to decouple multithreaded components, apply back-pressure and limit the size of the queue
