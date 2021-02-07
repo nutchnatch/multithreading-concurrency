@@ -1,0 +1,147 @@
+Lock free algorithms techniques and data structure
+    - what is wrong with lockz?
+        + majority of multithreading programs is done with locks (synchronized, reentrant locks, reentrant read write locks)
+        + most of the concurrency problems are easier and safer to solve with locks
+        + locks have great software and hardware support
+        + using locks, we can solve all concurrency problems
+
+        - as engineers, we are always faced with a trade off
+        - for most problems, there are more than one solution
+        - the more tool we have, the better we can choose the right tool for the job
+        - being able to choose the right tool for the job, is what makes a good engineer
+
+Deadlocks
+    - are generally unrecoverable
+    - can bring the application to a complete halt
+    - the more locks in the application, the higher the chance of deadlock
+
+Slow critical section:
+    - multiple threads using the same lock
+    - one thread holds the lock for very long
+    - that thread will slow down the other threads
+    - all threads become as slow as the slowest thread
+
+Priority inversion:
+    - two threads sharing same lock for a resource
+        + one thread has a lower priority, determined by OS
+            - background document saver has a lower priority than a UI thread
+        + priority is given to threads to determine the ones which will be scheduled first, or more frequently
+        + what happens if a lower priority thread acquire that shared lock?
+            - high priority is now stock, because OS would not schedule the lower priority thread  back soon enough to
+                release the lock, and high priority cannot progress, because it cannot acquire the lock
+            - this can lead to performance issues, as well as unresponsiveness of applications
+            - different OS solves this problem in a different way
+
+Threads not releasing a lock (kill tolerance)
+    - thread dies, get interrupted or forgets to release a lock
+    - leaves all threads hanging forever, this situation is unrecoverable just like a deadlock
+    - to avoid this, developers are required to write more complex code, wrapping every critical section with a try and
+        finally blocks, trylock, timeouts, etc
+
+Performance
+    - performance overhead in having contention over a lock
+        + if thread A acquires a lock
+        + thread B also tries to acquire a lock and gets blocked
+        + this have the following implications:
+            - extra context switch from thread B to another thread because thread B is unable to continue
+            - other overhead bringing thread B back when lock is released
+            - this overhead an latency may not be noticeable for most applications, but app with high speed latency,
+                which operates in some milliseconds latency, this overhead is very significant
+
+Alternatives for lock:
+    - Lock Free Technique
+        + why did we needed locks?
+            - the reason is multiple threads sharing the same resources
+            - at least one thread modifying the shared resources
+            - and operations were not atomic
+        + reasons of non-atomic operations
+            - the problem os ins the lower level of abstraction stacks
+                * a java operation(s) turn onto more than one hardware operation(s) executed in the CPU
+                    - counter ++ - turns into 3 hardware instructions:
+                        + read count value
+                        + calculate new value
+                        + store the new value back to count
+                    - between the execution of those several hardware instructions, another thread can modify the value of count
+
+        + lock free programming
+            + boils down to utilizing operations are guaranteed to be executed as single hardware instructions
+            + a single hardware instruction is atomic by definition and therefore, thread safe
+        + review of atomic instructions we learned
+            - read / assignment on all primitive typed (excepts long and doubles)
+            - read / assignment on all references
+            - read / assignment on volatile long and double
+
+            - to avoid data races
+                + agree to make all shared variables (primitive types and references) that we want to read and write to without using a lock, volatile
+            - AtomicX classes (in java util concurrent package)
+                + those classes use Unsafe class which provides access to low level, native methods
+                    which utilise low level platform specific operations, including atomic operations
+                + list of classes available on java 10
+                    - AtomicBoolean
+                    - AtomicInteger
+                    - AtomicIntegerArray
+                    - AtomicIntegerFieldUpdater<T>
+                    - AtomicLong
+                    - AtomicLongArray
+                    - AtomicLongFieldAdapter<T>
+                    - AtomicMarkableReference<V>
+                    - AtomicReference<V>
+                    - AtomicReferenceArray<E>
+                    - AtomicReferenceFieldAdapter<T,V>
+                    - AtomicStampedReference<V>
+                    - DoubleAccumulator
+                    - DoubleAdder
+                    - LongAccumulator
+                    - LongAdder
+
+            - AtomicInteger - the most commonly used atomic class
+                + provides atomic operations we can perform in integer values
+                ex: int initialValue = 0;
+                    AtomicInteger atomicInteger = new AtomicInteger(initialValue);
+                    + methods to atomically increment the integer by one:
+                    - atomicInteger.incrementAndGet(); // returns the new value
+                    - atomicInteger.getAndIncrement(); // returns the previous value value
+                ex: int delta = 5;
+                    //atomically add any integer
+                    atomicInteger.addAndGet(delta); // returns the new value
+                    atomicInteger.getAndAdd(delta); // returns the previous value
+                    + if delta is negative, we can achieve subtraction
+
+                + Pros & Cons:
+                    - Pros
+                        + simplicity
+                        + no need for lock or synchronization
+                        + no race conditions or data race
+                    - Cons:
+                        + only the operation itself is atomic
+                        + there still race condition between 2 separate atomic operations
+                        ex: int initialValue = 0;
+                            AtomicInteger atomicInteger = new AtomicInteger(initialValue);
+                            atomicInteger.incrementAndGet();
+                            atomicInteger.addAndGet(-5);  <------------ race condition
+
+                + AtomicInteger is a great tool for concurrent counting, without the complexity of using a lock
+                + AtomicInteger should be used only when atomic operations are needed
+                + it is on par and sometimes more performant than a regular integer with a lock as protection
+                + if used only by a single thread, it might be slower than using a regular integer
+                + if we have a long instead of an integer, we use AtomicLong instead of AtomicInteger, the functionality keeps the same
+                + for boolean typpe, we can achieve the same objective with AtomicBoolean
+
+            - AtomicReference<T>
+                + wraps an atomic reference os a class and gives the ability to perform atomic operations on that class
+                + V get() - return the its current value
+                + void set(V newValue) - sets the value to newValue
+                + compareAndSet(V expectedValue, V newValue)
+                    * assigns the new value id current value == expected value
+                    * ignores the new value id current value != expected value
+
+                    * this method is available in all atomic classes, including AtomicInteger, AtomicLong, AtomicBoolean
+                    * it compiles into a single atomic hardware operation, which makes it so powerful
+
+            - Lock free data structures:
+                + Stack
+                    * java already provides a class, which internally uses Vector class
+                    * in this case, we will implement a class, based on a LinkedList (Head/Top)
+                        - when a new item is added to the stack, it is added into the front of the linked list and will become the new top
+                        - when an item is poped from the stack, the value in the head of the linked list will be returned
+                            and the next item in the linked list becomes the new head

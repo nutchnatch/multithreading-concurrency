@@ -1,6 +1,8 @@
-package concurrency.challanges;
+package nonblocking.lockfree;
 
-public class Wharehouse {
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class WharehouseAtomicOperations {
 
     public static void main(String[] args) throws InterruptedException {
         InventoryCounter inventoryCounter = new InventoryCounter();
@@ -13,7 +15,6 @@ public class Wharehouse {
 
         decrementingThread.join();
 
-        // since we do the same number of increments and decrements, item should have 0 value
         System.out.println("We currently have " + inventoryCounter.getItems() + " items");
     }
 
@@ -50,28 +51,18 @@ public class Wharehouse {
     }
 
     private static class InventoryCounter {
-        private int items = 0;
+        private AtomicInteger items = new AtomicInteger(0);
 
-        Object lock = new Object();
-//        public synchronized void increment() {
-//            items++;
-//        }
         public void increment() {
-            synchronized(this.lock) {
-                items++;
+                items.incrementAndGet();
             }
-        }
 
-        public synchronized void decrement() {
-            synchronized(this.lock) {
-                items--;
+        public void decrement() {
+                items.decrementAndGet();
             }
-        }
 
-        public synchronized int getItems() {
-            synchronized(this.lock) {
-                return items;
+        public int getItems() {
+                return items.get();
             }
         }
-    }
 }
