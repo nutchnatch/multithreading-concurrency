@@ -12,7 +12,7 @@ First memory region - Stack memory region:
     - when the main thread calls a method, it allocated some space on top of the stack for that method
     - that space is called the stack frame
     - arguments are pushed inside that frame
-    - every local variable is allocated in the stack, in the order os appearance
+    - every local variable is allocated in the stack, in the order of appearance
     - each method has access to variable in ist own frame
     - when the method is returned, its stack frame is invalidated
     - the same happens with the main thread, when it finishes stack frame is invalidated
@@ -25,7 +25,7 @@ Second memory region - Heap
     - shared memory region that belongs to the process
     - all threads share whatever is located on the heap
     - we can access and allocate object on the heap at any moment
-    - all objects are allocate on the heap (all created with new operator)
+    - all objects are allocated on the heap (all created with new operator)
         * String, Object, Collections ... our own created objects
         * Member of classes
         * Static variables - member of the class object, associated with that class
