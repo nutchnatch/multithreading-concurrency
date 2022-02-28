@@ -9,12 +9,12 @@ Performance:
             * what would be the number for N?
                 - N = number of cores
                         - (only if the threads can run without interruptions (no IO/blocking calls/sleep))
-                        - (nothing else is running  that consumes a lot od cpu)
+                        - (nothing else is running  that consumes a lot of cpu)
                         - hiperthreading - virtual cores vs physical cores
                     -> to run really in parallel, each of them should run on a core
-                    -> adding on more thread, would be counterproductive and reduce latency
+                    -> adding one more thread, would be counterproductive and reduce latency
                     -> that thread would be pushing other threads, causing context switching, bad cash performance, extra memory consumption
-            * breaking a task an aggregating results comes fro free?
+            * breaking a task an aggregating results comes for free?
                 - cost of breaking task into multiple tasks + thread creation, passing tasks to threads +
                    time between thread start and getting really scheduled + time until the last thread finishes and signals +
                    time until aggregation thread get signal + time to aggregate sub-results into a single artifact
