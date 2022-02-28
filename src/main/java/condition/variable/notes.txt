@@ -1,6 +1,6 @@
 Thread communication
     - On way to communicate is when we explicitly interrupt a thread
-    - Other one is when er cal join method that tells other threads to wait until this thread finishes
+    - Other one is when we call join method that tells other threads to wait until this thread finishes
         and wakes it up then
     - when a thread A release a semaphore, it tells thread B to wake up
 
