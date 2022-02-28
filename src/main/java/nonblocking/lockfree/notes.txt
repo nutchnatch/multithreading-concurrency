@@ -1,5 +1,5 @@
 Lock free algorithms techniques and data structure
-    - what is wrong with lockz?
+    - what is wrong with locks?
         + majority of multithreading programs is done with locks (synchronized, reentrant locks, reentrant read write locks)
         + most of the concurrency problems are easier and safer to solve with locks
         + locks have great software and hardware support
@@ -45,7 +45,7 @@ Performance
         + this have the following implications:
             - extra context switch from thread B to another thread because thread B is unable to continue
             - other overhead bringing thread B back when lock is released
-            - this overhead an latency may not be noticeable for most applications, but app with high speed latency,
+            - this overhead and latency may not be noticeable for most applications, but app with high speed latency,
                 which operates in some milliseconds latency, this overhead is very significant
 
 Alternatives for lock:
@@ -55,7 +55,7 @@ Alternatives for lock:
             - at least one thread modifying the shared resources
             - and operations were not atomic
         + reasons of non-atomic operations
-            - the problem os ins the lower level of abstraction stacks
+            - the problem is in the lower level of abstraction stacks
                 * a java operation(s) turn onto more than one hardware operation(s) executed in the CPU
                     - counter ++ - turns into 3 hardware instructions:
                         + read count value
@@ -72,7 +72,7 @@ Alternatives for lock:
             - read / assignment on volatile long and double
 
             - to avoid data races
-                + agree to make all shared variables (primitive types and references) that we want to read and write to without using a lock, volatile
+                + agree to make all shared variables (primitive types and references) that we want to read and write to, without using a lock, volatile
             - AtomicX classes (in java util concurrent package)
                 + those classes use Unsafe class which provides access to low level, native methods
                     which utilise low level platform specific operations, including atomic operations
