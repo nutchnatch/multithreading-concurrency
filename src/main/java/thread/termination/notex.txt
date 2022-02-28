@@ -19,7 +19,7 @@
 # When can we interrupt a thread?
     There are 2 scenarios where it can be used:
     1- If the thread we are trying to interrupt is executing a method that throws an interrupted exception
-    2- If thread we are trying ti interrupt is handling the interrupt signal explicitly
+    2- If thread we are trying to interrupt is handling the interrupt signal explicitly
 
 # Daemon threads are background threads that do not prevent the application from exiting if the main thread terminates.
     - background tasks that should not block our application from terminating
